@@ -16,7 +16,7 @@ class ExampleTest extends TestCase
 
     public function test_contem(): void
     {
-        $this->containsEqual('teste');
+        $this->containsEqual('Laravel');
     }
 
 }
