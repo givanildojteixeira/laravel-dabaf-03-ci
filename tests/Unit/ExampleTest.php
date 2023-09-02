@@ -11,6 +11,12 @@ class ExampleTest extends TestCase
      */
     public function test_that_true_is_true(): void
     {
-        $this->assertTrue(false);
+        $this->assertTrue(true);
     }
+
+    public function test_contem(): void
+    {
+        $this->containsEqual('teste');
+    }
+
 }
