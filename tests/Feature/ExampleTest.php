@@ -10,10 +10,22 @@ class ExampleTest extends TestCase
     /**
      * A basic test example.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_text_quando_contem(): void
     {
         $response = $this->get('/');
 
         $response->assertStatus(200);
+        $response->assertSee('Documentation');
     }
+
+    public function test_text_quando_nao_contem()
+{
+    $response = $this->get('/');
+
+    // Verifica se a resposta não contém o texto "Texto indesejado".
+    $response->assertDontSee('Texto indesejado');
 }
+
+
+}
+
