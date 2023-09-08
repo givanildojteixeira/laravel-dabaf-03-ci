@@ -25,6 +25,8 @@
 - git commit -m "mensagem do commit"
 =>prepara o commit
 - git push -u origin nome-da-branch
+ou depois da primeira
+- git push
 
 **Branch**
 - git branch bug-123  
@@ -49,9 +51,16 @@ ou
 =>efetua o push
 git push --set-upstream origin Cria-Readme
 
+
+:warning: ATENÇÃO:
+
+Quando estiver pronto a merge e quiser atualizar na Main, use o github 
+para comparar a unificar a branch, posteriormente pode excluir a branch
+
+
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
-
+***
 ## DABaF - Módulo 4
 
     Documentação de testes do Laravel:
@@ -270,7 +279,6 @@ public function test_api_route_works(): void{
 }
 ```
 **:heavy_check_mark: TESTES BROWSER**
-
 **Comandos:**
 - sail composer require --dev laravel/dusk    
     - cria o ambiente
