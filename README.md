@@ -2,43 +2,101 @@
 
 ***
 # DABaF - Módulo 3
-** :warning: Principais Comandos GIT=>
-git init
-    inicia um repositorio
-git remote add origin https://github.com/givanildojteixeira/laravel-dabaf-03-ci.git
-    vincular um repositorio
-git status          
-    verifica o Status 
-git config --global user.name "Leonardo Comelli"
-    seta o usuario
-git config --global user.email leonardo@software-ltda.com.br
-    seta o email
-git config --list
-    lista as configurações
+**:warning: Principais Comandos GIT**
+**Inicialização**
+- git init     
+=>inicia um repositorio
+- git remote add origin https://github.com/givanildojteixeira/laravel-dabaf-03-ci.git
+=>vincular um repositorio
+- git config --global user.name "GivanildoJTeixeira"
+=>seta o usuario
+- git config --global user.email "givanildo@guara..."
+=>seta o email
 
-git add .
-    adiciona todos os arquivos 
-git commit -m "mensagem do commit"
-    prepara o commit
+**Status**
+- git status          
+=>verifica o Status 
+- git config --list
+=>lista as configurações
 
-criação de Branch
-git branch bug-123  //cria a branch bug-123
-git push origin bug-123  //cria e envia essa branch para o repositorio
-git checkout bug-123   //Troca para essa branch
+**Commit**
+- git add .
+=>adiciona todos os arquivos 
+- git commit -m "mensagem do commit"
+=>prepara o commit
+- git push -u origin nome-da-branch
+ou depois da primeira
+- git push
+
+**Branch**
+- git branch bug-123  
+=>cria a branch bug-123
+- git push origin bug-123  
+=>cria e envia essa branch para o repositorio
+- git checkout bug-123   
+=>Troca para essa branch
 ou
-git checkout -b bug-456    //cria e troca a branch
-git branch -d bug-123    //apaga branch
-git push origin:bug-123  //apaga bfanch remoto
-git branch    //lita as branch
+- git checkout -b bug-456    
+=>cria e troca a branch
+- git branch -d bug-123    
+=>apaga branch
+- git push origin:bug-123  
+=>apaga fanch remoto
+- git branch    
+=>lista as branch
 
 
+**push**
+- git push origin @givanildo/setup-ci
+=>efetua o push
+git push --set-upstream origin Cria-Readme
 
-git push origin @givanildo/setup-ci
-    efetua o push
+
+:warning: ATENÇÃO:
+
+Quando estiver pronto a merge e quiser atualizar na Main, use o github 
+para comparar a unificar a branch, como faz
+>git add .    ou git add arquivo
+>git commit -m "Comentario"
+>git push
+
+No GitHub
+Aguarde o teste finalizar dentro da Brach nova na Tag 'Actions'
+
+>Se for automático:
+
+    - clique em commit e merge
+    - aguarde os testes 
+    - clique em 'Squash and merge'
+    - clique em 'Confirm squash and merge'
+    - pronto
+
+>Se não for automático
+
+    - vai na brach nova, em 'Code' , clique em 'Contribute' e depois em 'Open pull request'
+    - digite um comentario e clique em 'Create pull request'
+        Se ocorrer problema de conflitos:
+        Decida se você deseja manter apenas as alterações do seu branch, 
+        manter apenas as alterações do outro branch, 
+        ou fazer uma nova alteração, 
+        que pode incorporar alterações de ambos os branches. 
+        Exclua os marcadores de conflito <<<<<<<, =======, >>>>>>> 
+        e faça as alterações desejadas na mesclagem final.
+    e clique em 'Mark as resolved'
+    - clique em commit e merge
+    - aguarde os testes 
+    - clique em 'Squash and merge'
+    - clique em 'Confirm squash and merge'
+    - pronto
+:warning: ATENÇÃO: Se der conflito, é importante fazer um pull para deixar igual
+a branch local com a remoto, caso contrario podera ocorrer problemas no prox push
+
+posteriormente pode excluir a branch de teste
+
 
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
-
+***
 ## DABaF - Módulo 4
 
     Documentação de testes do Laravel:
@@ -257,7 +315,6 @@ public function test_api_route_works(): void{
 }
 ```
 **:heavy_check_mark: TESTES BROWSER**
-
 **Comandos:**
 - sail composer require --dev laravel/dusk    
     - cria o ambiente
