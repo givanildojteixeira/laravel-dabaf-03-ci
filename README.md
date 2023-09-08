@@ -2,39 +2,52 @@
 
 ***
 # DABaF - Módulo 3
-** :warning: Principais Comandos GIT=>
-git init
-    inicia um repositorio
-git remote add origin https://github.com/givanildojteixeira/laravel-dabaf-03-ci.git
-    vincular um repositorio
-git status          
-    verifica o Status 
-git config --global user.name "Leonardo Comelli"
-    seta o usuario
-git config --global user.email leonardo@software-ltda.com.br
-    seta o email
-git config --list
-    lista as configurações
+**:warning: Principais Comandos GIT**
+**Inicialização**
+- git init     
+=>inicia um repositorio
+- git remote add origin https://github.com/givanildojteixeira/laravel-dabaf-03-ci.git
+=>vincular um repositorio
+- git config --global user.name "GivanildoJTeixeira"
+=>seta o usuario
+- git config --global user.email "givanildo@guara..."
+=>seta o email
 
-git add .
-    adiciona todos os arquivos 
-git commit -m "mensagem do commit"
-    prepara o commit
+**Status**
+- git status          
+=>verifica o Status 
+- git config --list
+=>lista as configurações
 
-criação de Branch
-git branch bug-123  //cria a branch bug-123
-git push origin bug-123  //cria e envia essa branch para o repositorio
-git checkout bug-123   //Troca para essa branch
+**Commit**
+- git add .
+=>adiciona todos os arquivos 
+- git commit -m "mensagem do commit"
+=>prepara o commit
+- git push -u origin nome-da-branch
+
+**Branch**
+- git branch bug-123  
+=>cria a branch bug-123
+- git push origin bug-123  
+=>cria e envia essa branch para o repositorio
+- git checkout bug-123   
+=>Troca para essa branch
 ou
-git checkout -b bug-456    //cria e troca a branch
-git branch -d bug-123    //apaga branch
-git push origin:bug-123  //apaga bfanch remoto
-git branch    //lita as branch
+- git checkout -b bug-456    
+=>cria e troca a branch
+- git branch -d bug-123    
+=>apaga branch
+- git push origin:bug-123  
+=>apaga fanch remoto
+- git branch    
+=>lista as branch
 
 
-
-git push origin @givanildo/setup-ci
-    efetua o push
+**push**
+- git push origin @givanildo/setup-ci
+=>efetua o push
+git push --set-upstream origin Cria-Readme
 
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
