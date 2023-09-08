@@ -15,5 +15,4 @@ class ExampleTest extends TestCase
     }
 
 
-
 }
