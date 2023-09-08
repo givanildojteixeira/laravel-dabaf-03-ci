@@ -25,6 +25,7 @@
 - git commit -m "mensagem do commit"
 =>prepara o commit
 - git push -u origin nome-da-branch
+
 ou depois da primeira
 - git push
 
@@ -50,7 +51,6 @@ ou
 - git push origin @givanildo/setup-ci
 =>efetua o push
 git push --set-upstream origin Cria-Readme
-
 
 :warning: ATENÇÃO:
 
