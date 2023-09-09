@@ -297,7 +297,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::get('/rooms',[RoomController::class, 'index']);
 ```
-no arquivo >controllers>RoomController.php
+no arquivo Http>controllers>RoomController.php
 ```sh
 class RoomControler extends Controller{
     public function index(){
