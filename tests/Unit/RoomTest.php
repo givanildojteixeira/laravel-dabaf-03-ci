@@ -36,12 +36,33 @@ class RoomTest extends TestCase
 
     public function test_a_room_can_be_persisted(): void
     {
+        //cria a variavel
         $room = new Room(['number' => 2, 'isReserved' => false]);
-        
+        //faz uma contagem que deve resultar = 0 porque estamos
+        //trabalhando com o banco de dados em branco, 
+        //devido ao comando use RefreshDatabase;
+        //e nossa gravação esta somene em memória
         $this->assertCount(0, Room::all());
-        
+        //agora se salvar no banco 
+        //e
+        //para isso devemos mudar para use Tests\TestCase;
+        //senao da problema de conexao
         $room->save();
-
+        //depois de salvo deve resultar em um reg criado
         $this->assertCount(1, Room::all());
     }
+    public function test_a_room_can_be_generated_by_factory(): void
+{
+    // make in memory
+    $room = Room::factory()->make(); //cria somente na memoria, nao grava no banco
+    $this->assertCount(0,Room::all());  //como nao gravou no banco retorna true
+
+    // save to database
+    $room2 = Room::factory()->create(); // grava no banco
+    $this->assertCount(1,Room::all()); //como gravou no banco retorna true
+    
+    //criando mais de uma
+    //$rooms = Room::factory(10)->make();  // grava no banco
+    //dd($rooms);    //mostra na tela o que foi criado na memoria , durante o teste
+}
 }

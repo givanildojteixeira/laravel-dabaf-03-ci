@@ -10,14 +10,17 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class RoomFactory extends Factory
 {
     /**
-     * Define the model's default state.
+     * Tem a função de criar dados fake para auxiliar nos testes 
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            //
+            //nesse caso vamos criar registros com nros aleatorios entre 1 e 100
+            //e com reserva aleatoria entre true e false
+            "number" => fake()->numberBetween(1,100),
+            "isReserved" => fake()->boolean()
         ];
     }
 }
