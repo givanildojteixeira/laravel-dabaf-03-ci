@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     use HasFactory;
+    
+    //quais colunas na tabela podem ser alterados
+    protected $fillable = ['number', 'isReserved'];
 }
