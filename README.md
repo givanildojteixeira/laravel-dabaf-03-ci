@@ -339,19 +339,19 @@ Verifique a documentação porque é possivel preencher formularios no sistema, 
 
 ***
 # DABaF - Módulo 5 - Pipeline CD com CapRover e Webhooks
-Idéia: Prover um mecanismo que integre desde o seu repositorio de código até o servidor, onde está hospedado a aplicação automatizando 
-esse processo de modo que os testes sejam executados e, se passarem, executam um pipeline para enviar o codigo para o servidor de produção.
+Ideia: Prover um mecanismo que integre desde o seu repositório de código até o servidor, onde está hospedado a aplicação automatizando 
+esse processo de modo que os testes sejam executados e, se passarem, executam um pipeline para enviar o código para o servidor de produção.
 Existem varias infraestruturas que provem esse contrato, na aula foi apresentado uma usando:
 Github - CapRover - Servidor com docker
 
 ## Configurando o Servidor para hospedar uma configuração Laravel
 Usado o Digital Ocean como exemplo
-necessita uma maquina virtual ativa na internet e um domínio válido
+necessita uma máquina virtual ativa na internet e um domínio válido
 ### Criação da máquina virtual
-Atenção, verifique a capacidade da maquina, capacidade de transferencia, armazenamento, processamento, sistema operacional, e suporte para caso de necessidade
-busque sempre os tutoriais da empresa que está fornecendo a maquina virtual, pois eles estarão atualizados!
+Atenção, verifique a capacidade da máquina, capacidade de transferência, armazenamento, processamento, sistema operacional, e suporte para caso de necessidade
+busque sempre os tutoriais da empresa que está fornecendo a máquina virtual, pois eles estarão atualizados!
 ### Acertos de firewall
-Proteja a infra, liberando tudo o que sai e bloqueando o que entra, exceto o ssh, para nao perder a conexão!
+Proteja a infra, liberando tudo o que sai e bloqueando o que entra, exceto o ssh, para não perder a conexão!
 Comandos: (Linux)
 
     sudo ufw allow ssh                 // libera conexoes de entrada via ssh
@@ -362,17 +362,17 @@ Comandos: (Linux)
 
 
 ## CapRover
-É um conteiner Docker que roda no servidor e apartir dele é póssivel orquestrar outros conteiners
+É um conteiner Docker que roda no servidor e a partir dele é possivel orquestrar outros conteiners
 Ele fica no servidor, aguardando chamadas do GitHub quando ocorre deployer novos.
-Ele possui acessos tanto ao GutHub quando ao servidor e sua função é pegar esses novos codigos, 
+Ele possui acessos tanto ao GutHub quando ao servidor e sua função é pegar esses novos códigos, 
 montar a imagem e implantar no ambiente de produção.
 É um código open source!
 Para funcionar é necessário:
-Configurar o Dominio, instalar o Docker e o Docker Composite
+Configurar o Domínio, instalar o Docker e o Docker Composite
 
 ### Configure o DNS: (dominio)
 Em networking: crie um subsdominio ex: *.laravel e aponte para o seu IP do servidor,
-aguarde a propagação e teste para ver se ja é possivel conectar
+aguarde a propagação e teste para ver se já é possível conectar
 Comando usado para conexão:
 
     ssh root@caprover.laravel.debug.app.br     (agora usando DNS ao inves de IP)
@@ -380,7 +380,7 @@ Comando usado para conexão:
 *Bonus: no Dnschecker voce pode verificar seu dominio*
 
 ### 1. Instale o Docker  (Engine)
-Atenção:Lembre-se de estar acessando o servidor
+Atenção: Lembre-se de estar acessando o servidor
 Acesse: https://docs.docker.com/engine/install/ubuntu/
         e digite os comandos:
 
@@ -398,7 +398,7 @@ Acesse: https://docs.docker.com/engine/install/ubuntu/
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
 
-####  instalar ultima versão
+####  Instalar última versão
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 #### Configure Docker to start on boot with systemd 
@@ -418,15 +418,15 @@ Libere as portas do firewall
 http://[IP_OF_YOUR_SERVER]:3000
 password: captain42
 em Dashboard > [wildcard.]
-indique para ele qual o dominio que ele está ex: laravel.debug.app.br
-isso te dara acesso diretamente via dominio e nao mais pela porta
+indique para ele qual o domínio que ele está ex: laravel.debug.app.br
+isso te dará acesso diretamente via domínio e não mais pela porta
 habilite o modo Seguro Https
 
 ### 2. Configure o GitHub
 ##### Criação do .deploy
 Template para deploy do Laravel com CapRover:
 https://github.com/jackbrycesmith/laravel-caprover-template 
-Baixe esse repositorio, coloque na raiz do codigo, assim, voce tere uma estrutura assim:
+Baixe esse repositório, coloque na raiz do codigo, assim, você terá uma estrutura assim:
 >Config
     >Dockerfile
 
@@ -525,22 +525,22 @@ Baixe esse repositorio, coloque na raiz do codigo, assim, voce tere uma estrutur
     
     ENTRYPOINT ["sh", "/entrypoint.sh"]
 
-Atenção com as variaveis de ambientes, que são criadas, ou seja, devem ser criadas também nesse arquivo
+Atenção com as variáveis de ambientes, que são criadas, ou seja, devem ser criadas também nesse arquivo
 
 ##### Para sincronizar github <> CapRover
-1.No CapRover, crie uma aplicação em [Apps]
+1. No CapRover, crie uma aplicação em [Apps]
 
-2.Acesse e copie o conteúdo do arquivo  .env em [App Configs] [Bulk Edit]
+2. Acesse e copie o conteúdo do arquivo  .env em [App Configs] [Bulk Edit]
 
 >Atente a geração de uma chave APP_Key diferente
     e APP_URL= mude para o local onde vai rodar a aplicação ex: web.laravel.debug.app.br
     Alterações do MYSQL.
     Na Aba Deployment, que o local que será configurado como o sistema vai integrar
 
-3.Usamos o metodo 3, onde a integração é via GitHub:
+3. Usamos o método 3, onde a integração é via GitHub:
 
 - tem o repositorio: https://github.com/givanildojteixeira/laravel-dabaf-03-ci
-- a Branch: Production - é a que será usada como codigo para produção
+- a Branch: Production - é a que será usada como código para produção
 - o Local onde está o arquivo: captain-definition: /captain-definition
 - a chave SSH (privada)
 
@@ -554,13 +554,13 @@ Em uma pasta vazia de terminal, digite:
 
 A chave privada no cliente (servidor)(CapRover)
 
-4.E uma url que será colocada no WebHooks para melhorar o sincronismo:
+4. E uma url que será colocada no WebHooks para melhorar o sincronismo:
 
-Para um melhor sincronismo entre o github e o CapRover, adicione a URL na aba Webhooks do github, assim, em alterações maiores, o github força a interaçao com o serviço CapRover, usando essa URL, ou seja, o CapRover sempre fica escutando as alterações do github, mas ocorre situações, geralmente vinculadas a alterações maiores, onde esse sincronismo falha, entao o git força, usando essa configuração.
-Nesse ponto ja deve estar funcionando o Pipeline.
-Basta Criar o Banco de Dados e configurar para que o sistema possa estar mais robusto!
+Para o sincronismo entre o github e o CapRover, adicione a URL na aba Webhooks do github, assim, quando realizar um commit na branch de produção o CapRover será avisado e a imagem do sistema será implantanda no servidor automaticamente
 
-##### Criando uma banco de dados
+Nesse ponto já deve estar funcionando o Pipeline, Porém ainda resta criar o Banco de Dados e configurar para que o sistema funcione adequadamente!
+
+##### Criando o Banco de Dados
 Em Apps na configuração do CapRover:
 - Clique em [One-Click Apps/DataBases]
 - Pesquise epor MySQL.
@@ -570,15 +570,15 @@ Em Apps na configuração do CapRover:
     db_username
     db_password
 
-Atenção: Conecte a esse banco e crie as tabelas para nao dar erro nesse processo!
-Em Ambiente real, esse banco deve ser dado upload com sua estrutura
+Atenção: Conecte a esse banco e crie as tabelas para não dar erro nesse processo!
+Em Ambiente real, esse banco pode ser feito upload com sua estrutura e informações.
 
-
-
-    
-
-
-
+Em resumo:
+1. Tendo um repositorio GitHub, com o codigo fonte de sua aplicação,
+2. Tendo um servidor ativo, com Ip válido, ao qual é possivel conectar ele via SSH,
+3. Este servidor ter o Docker instalado e um container usando a imagem do CapRover,
+4. No CapRover tere uma aplicação com o método deploy e apontado para um repositório github, com uma URL webhook,
+5. Basta realizar um commit na branch de produção, e o restante será automatizado no servidor de produção
 
 ***
 ***
