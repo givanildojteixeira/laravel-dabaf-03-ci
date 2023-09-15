@@ -337,7 +337,113 @@ public function test_BasicExample(): void{
 Verifique a documentação porque é possivel preencher formularios no sistema, como login rolar barra e outras automações e depois testar esses elementos simulando um browser
 
 
+***
+## DABaF - Módulo 5
 
+#### Acertos de firewall
+sudo ufw allow ssh
+    libera conexoes de entrada via ssh
+sudo ufw default deny incoming
+   bloqueia todas as portas de entrada
+sudo ufw default allow outgoing
+    libera tudo o que tiver saindo
+sudo ufw enable
+    ativa o firewall
+sudo ufw status
+    para ver o status
+
+    em resumo
+    ou seja o servidor conecta tudo e nao recebe nenhuma entrada 
+    desde que não seja via entrada ssh
+
+
+ferramenta CapRover
+    open source
+
+    container doc que roda no servidor
+    inclusive intereligando o github e o site
+
+
+
+#### configure o DNS: (dominio)
+    apontando o ip para o servidor
+    instar o docker e o 
+    docker composer
+
+    pegue o seu dominio e crie um subsdominio ex:
+    *.laravel
+    e aponte para o ip do seu servidor
+
+    Bonus: no dns checker voce pode verificar seu dominio
+
+####  Instalar o Docker
+configurar o docker: dentro do servidor
+lembre-se de estar acessando o servidor
+
+acesse: https://docs.docker.com/engine/install/ubuntu/
+        e digite os comandos:
+##### Add Docker's official GPG key:
+    sudo apt-get update
+    sudo apt-get install ca-certificates curl gnupg
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+#####  Add the repository to Apt sources:
+    echo \
+        "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+       $(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+    
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
+    sudo apt-get update
+
+#####  instalar ultima versão
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+##### Configure Docker to start on boot with systemd 
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
+
+#### CapRover Setup
+##### Configure Firewall
+libere as portas do firewall
+
+    ufw allow 80,443,3000,996,7946,4789,2377/tcp; ufw allow 7946,4789,2377/udp;
+    
+##### Step 1: CapRover Installation
+
+    docker run -p 80:80 -p 443:443 -p 3000:3000 -e ACCEPTED_TERMS=true -v /var/run/docker.sock:/var/run/docker.sock -v /captain:/captain caprover/caprover
+
+##### Acesse o CapRover
+    http://[IP_OF_YOUR_SERVER]:3000
+    password: captain42
+
+    indique para ele qual o dominio que ele está
+    Dashboard > wildcard
+    isso te dara acesso diretamente pelo dominio e nao mais pela porta
+
+##### Para sincronizar github <> Caprover
+usamos o metodo 3, onde tem o repositorio, a Branch e a chave SSH (privada)
+e uma url que será colocada no WebHooks para melhorar o sincronismo
+
+
+##### Criando uma chave privada
+em uma pasta vazia de terminal, digite:
+
+    ssh-keygen -t rsa -m PEM
+
+coloque um nome e uma senha
+coloque a chave pub(publica) no github, e
+a chave privada no cliente (servidor)(CapRover)
+
+##### Colocando o WebHooks
+Para um melhor sincronismo entre o github e o CapRover, adicione a URL na aba Webhooks do github, assim, em alterações maiores, o github força a interaçao com o serviço CapRover, usando essa URL, ou seja, o CapRover sempre fica escutando as alterações do github, mas ocorre situações, geralmente vinculadas a alterações maiores, onde esse sincronismo falha, entao o git força, usando essa configuração.
+
+
+***
+***
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
