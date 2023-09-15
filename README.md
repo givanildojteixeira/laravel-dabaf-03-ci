@@ -97,7 +97,7 @@ posteriormente pode excluir a branch de teste
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
 ***
-## DABaF - Módulo 4
+# DABaF - Módulo 4
 
     Documentação de testes do Laravel:
     https://laravel.com/docs/10.x/testing
@@ -338,108 +338,246 @@ Verifique a documentação porque é possivel preencher formularios no sistema, 
 
 
 ***
-## DABaF - Módulo 5
+# DABaF - Módulo 5 - Pipeline CD com CapRover e Webhooks
+Idéia: Prover um mecanismo que integre desde o seu repositorio de código até o servidor, onde está hospedado a aplicação automatizando 
+esse processo de modo que os testes sejam executados e, se passarem, executam um pipeline para enviar o codigo para o servidor de produção.
+Existem varias infraestruturas que provem esse contrato, na aula foi apresentado uma usando:
+Github - CapRover - Servidor com docker
 
-#### Acertos de firewall
-sudo ufw allow ssh
-    libera conexoes de entrada via ssh
-sudo ufw default deny incoming
-   bloqueia todas as portas de entrada
-sudo ufw default allow outgoing
-    libera tudo o que tiver saindo
-sudo ufw enable
-    ativa o firewall
-sudo ufw status
-    para ver o status
+## Configurando o Servidor para hospedar uma configuração Laravel
+Usado o Digital Ocean como exemplo
+necessita uma maquina virtual ativa na internet e um domínio válido
+### Criação da máquina virtual
+Atenção, verifique a capacidade da maquina, capacidade de transferencia, armazenamento, processamento, sistema operacional, e suporte para caso de necessidade
+busque sempre os tutoriais da empresa que está fornecendo a maquina virtual, pois eles estarão atualizados!
+### Acertos de firewall
+Proteja a infra, liberando tudo o que sai e bloqueando o que entra, exceto o ssh, para nao perder a conexão!
+Comandos: (Linux)
 
-    em resumo
-    ou seja o servidor conecta tudo e nao recebe nenhuma entrada 
-    desde que não seja via entrada ssh
-
-
-ferramenta CapRover
-    open source
-
-    container doc que roda no servidor
-    inclusive intereligando o github e o site
+    sudo ufw allow ssh                 // libera conexoes de entrada via ssh
+    sudo ufw default deny incoming     // bloqueia todas as portas de entrada
+    sudo ufw default allow outgoing    // libera tudo o que tiver saindo
+    sudo ufw enable                    // ativa o firewall
+    sudo ufw status                    // para ver o status
 
 
+## CapRover
+É um conteiner Docker que roda no servidor e apartir dele é póssivel orquestrar outros conteiners
+Ele fica no servidor, aguardando chamadas do GitHub quando ocorre deployer novos.
+Ele possui acessos tanto ao GutHub quando ao servidor e sua função é pegar esses novos codigos, 
+montar a imagem e implantar no ambiente de produção.
+É um código open source!
+Para funcionar é necessário:
+Configurar o Dominio, instalar o Docker e o Docker Composite
 
-#### configure o DNS: (dominio)
-    apontando o ip para o servidor
-    instar o docker e o 
-    docker composer
+### Configure o DNS: (dominio)
+Em networking: crie um subsdominio ex: *.laravel e aponte para o seu IP do servidor,
+aguarde a propagação e teste para ver se ja é possivel conectar
+Comando usado para conexão:
 
-    pegue o seu dominio e crie um subsdominio ex:
-    *.laravel
-    e aponte para o ip do seu servidor
+    ssh root@caprover.laravel.debug.app.br     (agora usando DNS ao inves de IP)
 
-    Bonus: no dns checker voce pode verificar seu dominio
+*Bonus: no Dnschecker voce pode verificar seu dominio*
 
-####  Instalar o Docker
-configurar o docker: dentro do servidor
-lembre-se de estar acessando o servidor
-
-acesse: https://docs.docker.com/engine/install/ubuntu/
+### 1. Instale o Docker  (Engine)
+Atenção:Lembre-se de estar acessando o servidor
+Acesse: https://docs.docker.com/engine/install/ubuntu/
         e digite os comandos:
-##### Add Docker's official GPG key:
+
+#### Add Docker's official GPG key:
     sudo apt-get update
     sudo apt-get install ca-certificates curl gnupg
     sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
     sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-#####  Add the repository to Apt sources:
+####  Add the repository to Apt sources:
     echo \
         "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
        $(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-    
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    
     sudo apt-get update
 
-#####  instalar ultima versão
+####  instalar ultima versão
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-
-##### Configure Docker to start on boot with systemd 
+#### Configure Docker to start on boot with systemd 
     sudo systemctl enable docker.service
     sudo systemctl enable containerd.service
 
-#### CapRover Setup
-##### Configure Firewall
-libere as portas do firewall
+#### Configure Firewall
+Libere as portas do firewall
 
     ufw allow 80,443,3000,996,7946,4789,2377/tcp; ufw allow 7946,4789,2377/udp;
-    
-##### Step 1: CapRover Installation
 
+### 2. Instale o CapRover
+    
     docker run -p 80:80 -p 443:443 -p 3000:3000 -e ACCEPTED_TERMS=true -v /var/run/docker.sock:/var/run/docker.sock -v /captain:/captain caprover/caprover
 
-##### Acesse o CapRover
-    http://[IP_OF_YOUR_SERVER]:3000
-    password: captain42
+#### Acesse o CapRover
+http://[IP_OF_YOUR_SERVER]:3000
+password: captain42
+em Dashboard > [wildcard.]
+indique para ele qual o dominio que ele está ex: laravel.debug.app.br
+isso te dara acesso diretamente via dominio e nao mais pela porta
+habilite o modo Seguro Https
 
-    indique para ele qual o dominio que ele está
-    Dashboard > wildcard
-    isso te dara acesso diretamente pelo dominio e nao mais pela porta
+### 2. Configure o GitHub
+##### Criação do .deploy
+Template para deploy do Laravel com CapRover:
+https://github.com/jackbrycesmith/laravel-caprover-template 
+Baixe esse repositorio, coloque na raiz do codigo, assim, voce tere uma estrutura assim:
+>Config
+    >Dockerfile
 
-##### Para sincronizar github <> Caprover
-usamos o metodo 3, onde tem o repositorio, a Branch e a chave SSH (privada)
-e uma url que será colocada no WebHooks para melhorar o sincronismo
+    ARG PHP_VERSION=${PHP_VERSION:-7.4}
+    FROM php:${PHP_VERSION}-fpm-alpine AS php-system-setup
+    
+    # Install system dependencies
+    RUN apk add --no-cache dcron busybox-suid libcap curl zip unzip git
+    
+    # Install PHP extensions
+    COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+    RUN install-php-extensions intl bcmath gd pdo_mysql pdo_pgsql opcache redis uuid exif pcntl zip
+    
+    # Install supervisord implementation
+    COPY --from=ochinchina/supervisord:latest /usr/local/bin/supervisord /usr/local/bin/supervisord
+    
+    # Install caddy
+    COPY --from=caddy:2.2.1 /usr/bin/caddy /usr/local/bin/caddy
+    RUN setcap 'cap_net_bind_service=+ep' /usr/local/bin/caddy
+    
+    # Install composer
+    COPY --from=composer/composer:2 /usr/bin/composer /usr/local/bin/composer
+    
+    FROM php-system-setup AS app-setup
+    
+    # Set working directory
+    ENV LARAVEL_PATH=/srv/app
+    WORKDIR $LARAVEL_PATH
+    
+    # Add non-root user: 'app'
+    ARG NON_ROOT_GROUP=${NON_ROOT_GROUP:-app}
+    ARG NON_ROOT_USER=${NON_ROOT_USER:-app}
+    RUN addgroup -S $NON_ROOT_GROUP && adduser -S $NON_ROOT_USER -G $NON_ROOT_GROUP
+    RUN addgroup $NON_ROOT_USER wheel
+    
+    # Set cron job
+    COPY ./.deploy/config/crontab /etc/crontabs/$NON_ROOT_USER
+    RUN chmod 777 /usr/sbin/crond
+    RUN chown -R $NON_ROOT_USER:$NON_ROOT_GROUP /etc/crontabs/$NON_ROOT_USER && setcap cap_setgid=ep /usr/sbin/crond
+    
+    # Switch to non-root 'app' user & install app dependencies
+    COPY composer.json composer.lock ./
+    RUN chown -R $NON_ROOT_USER:$NON_ROOT_GROUP $LARAVEL_PATH
+    USER $NON_ROOT_USER
+    RUN composer install --prefer-dist --no-scripts --no-dev --no-autoloader
+    RUN rm -rf /home/$NON_ROOT_USER/.composer
+    
+    # Copy app
+    COPY --chown=$NON_ROOT_USER:$NON_ROOT_GROUP . $LARAVEL_PATH/
+    COPY ./.deploy/config/php/local.ini /usr/local/etc/php/conf.d/local.ini
+    
+    # Set any ENVs
+    ARG APP_KEY=${APP_KEY}
+    ARG APP_NAME=${APP_NAME}
+    ARG APP_URL=${APP_URL}
+    ARG APP_ENV=${APP_ENV}
+    ARG APP_DEBUG=${APP_DEBUG}
+    
+    ARG LOG_CHANNEL=${LOG_CHANNEL}
+    
+    ARG DB_CONNECTION=${DB_CONNECTION}
+    ARG DB_HOST=${DB_HOST}
+    ARG DB_PORT=${DB_PORT}
+    ARG DB_DATABASE=${DB_DATABASE}
+    ARG DB_USERNAME=${DB_USERNAME}
+    ARG DB_PASSWORD=${DB_PASSWORD}
+    
+    ARG BROADCAST_DRIVER=${BROADCAST_DRIVER}
+    ARG CACHE_DRIVER=${CACHE_DRIVER}
+    ARG QUEUE_CONNECTION=${QUEUE_CONNECTION}
+    ARG SESSION_DRIVER=${SESSION_DRIVER}
+    ARG SESSION_LIFETIME=${SESSION_LIFETIME}
+    
+    ARG REDIS_HOST=${REDIS_HOST}
+    ARG REDIS_PASSWORD=${REDIS_PASSWORD}
+    ARG REDIS_PORT=${REDIS_PORT}
+    
+    ARG MAIL_MAILER=${MAIL_MAILER}
+    ARG MAIL_HOST=${MAIL_HOST}
+    ARG MAIL_PORT=${MAIL_PORT}
+    ARG MAIL_USERNAME=${MAIL_USERNAME}
+    ARG MAIL_PASSWORD=${MAIL_PASSWORD}
+    ARG MAIL_ENCRYPTION=${MAIL_ENCRYPTION}
+    ARG MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
+    ARG MAIL_ENCRYPTION=${MAIL_ENCRYPTION}
+    ARG MAIL_FROM_NAME=${APP_NAME}
+    
+    ARG PUSHER_APP_ID=${PUSHER_APP_ID}
+    ARG PUSHER_APP_KEY=${PUSHER_APP_KEY}
+    ARG PUSHER_APP_SECRET=${PUSHER_APP_SECRET}
+    ARG PUSHER_APP_CLUSTER=${PUSHER_APP_CLUSTER}
+    
+    # Start app
+    EXPOSE 80
+    COPY ./.deploy/entrypoint.sh /
+    
+    ENTRYPOINT ["sh", "/entrypoint.sh"]
 
+Atenção com as variaveis de ambientes, que são criadas, ou seja, devem ser criadas também nesse arquivo
+
+##### Para sincronizar github <> CapRover
+1.No CapRover, crie uma aplicação em [Apps]
+
+2.Acesse e copie o conteúdo do arquivo  .env em [App Configs] [Bulk Edit]
+
+>Atente a geração de uma chave APP_Key diferente
+    e APP_URL= mude para o local onde vai rodar a aplicação ex: web.laravel.debug.app.br
+    Alterações do MYSQL.
+    Na Aba Deployment, que o local que será configurado como o sistema vai integrar
+
+3.Usamos o metodo 3, onde a integração é via GitHub:
+
+- tem o repositorio: https://github.com/givanildojteixeira/laravel-dabaf-03-ci
+- a Branch: Production - é a que será usada como codigo para produção
+- o Local onde está o arquivo: captain-definition: /captain-definition
+- a chave SSH (privada)
 
 ##### Criando uma chave privada
-em uma pasta vazia de terminal, digite:
+Em uma pasta vazia de terminal, digite:
 
     ssh-keygen -t rsa -m PEM
 
-coloque um nome e uma senha
-coloque a chave pub(publica) no github, e
-a chave privada no cliente (servidor)(CapRover)
+- Coloque um nome e uma senha
+- Coloque a chave pub(publica) no github, e
 
-##### Colocando o WebHooks
+A chave privada no cliente (servidor)(CapRover)
+
+4.E uma url que será colocada no WebHooks para melhorar o sincronismo:
+
 Para um melhor sincronismo entre o github e o CapRover, adicione a URL na aba Webhooks do github, assim, em alterações maiores, o github força a interaçao com o serviço CapRover, usando essa URL, ou seja, o CapRover sempre fica escutando as alterações do github, mas ocorre situações, geralmente vinculadas a alterações maiores, onde esse sincronismo falha, entao o git força, usando essa configuração.
+Nesse ponto ja deve estar funcionando o Pipeline.
+Basta Criar o Banco de Dados e configurar para que o sistema possa estar mais robusto!
+
+##### Criando uma banco de dados
+Em Apps na configuração do CapRover:
+- Clique em [One-Click Apps/DataBases]
+- Pesquise epor MySQL.
+- Coloque nome, Versão e Senha.
+- Altere essas informações em Apps > Web > App config
+    db_hosts
+    db_username
+    db_password
+
+Atenção: Conecte a esse banco e crie as tabelas para nao dar erro nesse processo!
+Em Ambiente real, esse banco deve ser dado upload com sua estrutura
+
+
+
+    
+
+
 
 
 ***
