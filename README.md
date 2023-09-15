@@ -577,7 +577,7 @@ Em resumo:
 1. Tendo um repositorio GitHub, com o codigo fonte de sua aplicação,
 2. Tendo um servidor ativo, com Ip válido, ao qual é possivel conectar ele via SSH,
 3. Este servidor ter o Docker instalado e um container usando a imagem do CapRover,
-4. No CapRover tere uma aplicação com o método deploy e apontado para um repositório github, com uma URL webhook,
+4. No CapRover ter uma aplicação com o método deploy configurado e apontado para um repositório github, com uma URL webhook,
 5. Basta realizar um commit na branch de produção, e o restante será automatizado no servidor de produção
 
 ***
